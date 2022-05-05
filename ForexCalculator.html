@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head><</head>
+   <body>
+      <head>
+         <meta HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE" />
+         <meta HTTP-EQUIV="Expires" content="Mon, 01 Jan 1990 12:00:00 GMT" />
+         <link href="/resource/1642771007000/ForexIcon" rel="shortcut icon" />
+         <title>Forex Calculator</title>
+         <meta charset="utf-8" />
+         <meta content="width=device-width, initial-scale=1" name="viewport" />
+         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+      </head>
+      <script>
+         $(document).ready(function(){
+             $('[data-toggle="tooltip"]').tooltip();
+         });
+         
+         function calculate() {
+             
+             if(document.getElementById('caCurrency').value != 'Select' && document.getElementById('caCurrency').value != '') {
+                 document.getElementById('caAdvanceLabel').innerHTML = '(' + document.getElementById('caCurrency').value + ')';
+                 document.getElementById('aeExpensesIncurredInFCLabel').innerHTML = '(' + document.getElementById('caCurrency').value + ')';
+                 document.getElementById('aeExpensesApartFromPerDiemLabel').innerHTML = '(' + document.getElementById('caCurrency').value + ')';
+                 document.getElementById('aeExpensesInPerDiemLabel').innerHTML = '(' + document.getElementById('caCurrency').value + ')';
+                 document.getElementById('refundPayableInFCLabel').innerHTML = '(' + document.getElementById('caCurrency').value + ')';
+                 document.getElementById('aeTotalAmountFCLabel').innerHTML = '(' + document.getElementById('caCurrency').value + ')';
+             }
+                     
+             if(document.getElementById('accomodation').value == 'Company') {
+                 document.getElementById('aeExpensesIncurredInFC').value = '50';
+             } else if(document.getElementById('accomodation').value == 'Own') {
+                 document.getElementById('aeExpensesIncurredInFC').value = '75';
+             } else {
+                 document.getElementById('aeExpensesIncurredInFC').value = '0';
+             }
+             
+             document.getElementById('aeNoOfDays').value = Math.round(Math.abs((new Date(document.getElementById('fromDate').value) - new Date(document.getElementById('toDate').value)) / (24 * 60 * 60 * 1000))) + 1;
+             document.getElementById('aeExpensesInPerDiem').value = parseFloat(document.getElementById('aeExpensesIncurredInFC').value) * parseFloat(document.getElementById('aeNoOfDays').value);
+             document.getElementById('aeTotalAmountFC').value = parseFloat(document.getElementById('aeExpensesInPerDiem').value) + parseFloat(document.getElementById('aeExpensesApartFromPerDiem').value);
+             document.getElementById('refundPayableInFC').value = parseFloat(document.getElementById('caAdvance').value) - parseFloat(document.getElementById('aeTotalAmountFC').value);
+             document.getElementById('refundPayableInINRAmount').value = Math.round((parseFloat(document.getElementById('caINRAmount').value) / parseFloat(document.getElementById('caAdvance').value)) * parseFloat(document.getElementById('refundPayableInFC').value));
+             document.getElementById('forexLossGainAmount').value = Math.round((parseFloat(document.getElementById('caINRAmount').value) - parseFloat(document.getElementById('aeTotalINRAmount').value)) - parseFloat(document.getElementById('refundPayableInINRAmount').value));
+             
+             
+             if(document.getElementById('forexLossGainAmount').value != undefined && document.getElementById('forexLossGainAmount').value != '' && document.getElementById('forexLossGainAmount').value != 0) {
+                 document.getElementById('result').innerHTML = 'Please add ' + (document.getElementById('forexLossGainAmount').value < 0 ? 'Forex Gain' : 'Forex Loss') + ' with amount ' + document.getElementById('forexLossGainAmount').value + ' INR on ' + document.getElementById('toDate').value + ' in concur.';
+             }
+         }
+      </script>
+      <body style="background-color: aliceblue;">
+         <div class="container">
+            <h3>Forex Gain/Loss Calculator</h3>
+            <div class="card">
+               <div class="card-body">
+                  <div class="row">
+                     <div class="col-md-3">
+                        <div class="form-group">
+                           <label for="caCurrency">Currency:</label>
+                           <select class="form-control" id="caCurrency" name="caCurrency" onchange="calculate()" placeholder="Currency">
+                              <option>Select</option>
+                              <option value="USD">USD</option>
+                              <option value="GBP">GBP</option>
+                              <option value="Euro">Euro</option>
+                              <option value="SAR">SAR</option>
+                              <option value="JPY">JPY</option>
+                           </select>
+                        </div>
+                     </div>
+                     <div class="col-md-3">
+                        <div class="form-group">
+                           <label for="accomodation">Accomodation:</label>
+                           <select class="form-control" id="accomodation" name="accomodation" onchange="calculate()" placeholder="Accomodation">
+                              <option>Select</option>
+                              <option value="Company">Company</option>
+                              <option value="Own">Own</option>
+                           </select>
+                        </div>
+                     </div>
+                     <div class="col-md-3">
+                        <div class="form-group">
+                           <label for="caAdvance">Concur Advance Amount <span id="caAdvanceLabel"></span>:</label>
+                           <input class="form-control" id="caAdvance" name="caAdvance" onchange="calculate()" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                     <div class="col-md-3">
+                        <div class="form-group">
+                           <label for="caINRAmount">Concur Advance Amount (INR):</label>
+                           <input class="form-control" id="caINRAmount" name="caINRAmount" onchange="calculate()" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="card">
+               <div class="card-body">
+                  <div class="row">
+                     <div class="col-md-4">
+                        <div class="form-group">
+                           <label for="aeExpensesIncurredInFC">Expenses incurred in FC <span id="aeExpensesIncurredInFCLabel"></span>:</label>
+                           <input class="form-control" id="aeExpensesIncurredInFC" name="aeExpensesIncurredInFC" onchange="calculate()" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <div class="form-group">
+                           <label for="aeExpensesApartFromPerDiem">Expenses apart from PerDiem (ATM) <span id="aeExpensesApartFromPerDiemLabel"></span>:</label>
+                           <input class="form-control" id="aeExpensesApartFromPerDiem" name="aeExpensesApartFromPerDiem" onchange="calculate()" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <div class="form-group">
+                           <label for="aeTotalINRAmount">Total Concur Expense Amount (INR):</label>
+                           <input class="form-control" id="aeTotalINRAmount" name="aeTotalINRAmount" onchange="calculate()" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="card">
+               <div class="card-body">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label for="fromDate">From Date:</label>
+                           <input class="form-control" id="fromDate" name="fromDate" onchange="calculate()" type="date" />
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label for="toDate">To Date:</label>
+                           <input class="form-control" id="toDate" name="toDate" onchange="calculate()" type="date" />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="card">
+               <div class="card-body">
+                  <div class="row">
+                     <div class="col-md-4">
+                        <div class="form-group">
+                           <label for="aeNoOfDays">No of Days:</label>
+                           <input class="form-control" disabled="true" id="aeNoOfDays" name="aeNoOfDays" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <div class="form-group">
+                           <label for="aeExpensesInPerDiem">Expenses in PerDiem <span id="aeExpensesInPerDiemLabel"></span>:</label>
+                           <input class="form-control" disabled="true" id="aeExpensesInPerDiem" name="aeExpensesInPerDiem" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <div class="form-group">
+                           <label for="aeTotalAmountFC">Total Amount in FC <span id="aeTotalAmountFCLabel"></span>:</label>
+                           <input class="form-control" disabled="true" id="aeTotalAmountFC" name="aeTotalAmountFC" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <div class="form-group">
+                           <label for="refundPayableInFC">Refund/Payable Amount <span id="refundPayableInFCLabel"></span>:</label>
+                           <input class="form-control" disabled="true" id="refundPayableInFC" name="refundPayableInFC" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <div class="form-group">
+                           <label for="refundPayableInINRAmount">Refund/Payable Amount (INR):</label>
+                           <input class="form-control" disabled="true" id="refundPayableInINRAmount" name="refundPayableInINRAmount" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <div class="form-group">
+                           <label for="forexLossGainAmount">Forex Gain/Loss Amount (INR):</label>
+                           <input class="form-control" disabled="true" id="forexLossGainAmount" name="forexLossGainAmount" placeholder="0" type="number" />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <center>
+                  <p id="result" style="font-weight: bold;"></p>
+               </center>
+            </div>
+         </div>
+   </body>
+   </body>
+</html>
